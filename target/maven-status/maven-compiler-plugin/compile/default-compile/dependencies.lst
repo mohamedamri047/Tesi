@@ -1,0 +1,6 @@
+classpath:/Users/mohamedamri/.m2/repository/org/mindrot/jbcrypt/0.4/jbcrypt-0.4.jar	17429:1487010211000
+classpath:/Users/mohamedamri/.m2/repository/org/mariadb/jdbc/mariadb-java-client/3.5.11/mariadb-java-client-3.5.11.jar	793387:1792604939000
+classpath:/Users/mohamedamri/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.22.4/jackson-databind-2.22.4.jar	1714464:1792278957000
+classpath:/Users/mohamedamri/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar	84211:1780202688000
+classpath:/Users/mohamedamri/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.22.4/jackson-core-2.22.4.jar	599548:1792278684000
+classpath:/Users/mohamedamri/.m2/repository/org/webjars/swagger-ui/5.33.2/swagger-ui-5.33.2.jar	1200581:1791807385000

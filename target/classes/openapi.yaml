@@ -1,0 +1,361 @@
+openapi: 3.0.3
+
+info:
+  title: API Poliambulatorio
+  description: API REST per la gestione delle prenotazioni del poliambulatorio
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+
+  # UC01 - LOGIN
+
+  /api/login:
+    post:
+      tags:
+        - Autenticazione
+      summary: Autenticazione utente
+      description: Verifica le credenziali e restituisce un token di sessione.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RichiestaLogin'
+      responses:
+        '200':
+          description: Autenticazione eseguita correttamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RispostaLogin'
+        '401':
+          description: Credenziali non valide
+        '405':
+          description: Metodo HTTP non consentito
+        '500':
+          description: Errore interno del server
+
+  # LOGOUT
+
+  /api/logout:
+    post:
+      tags:
+        - Autenticazione
+      summary: Logout utente
+      description: Revoca il token della sessione corrente.
+      security:
+        - TokenSessione: []
+      responses:
+        '204':
+          description: Logout effettuato correttamente
+        '401':
+          description: Sessione assente, non valida o scaduta
+        '405':
+          description: Metodo HTTP non consentito
+        '500':
+          description: Errore interno del server
+
+  # UC02 - PRESTAZIONI
+
+  /api/prestazioni:
+    get:
+      tags:
+        - Prestazioni
+      summary: Visualizza tutte le prestazioni mediche
+      description: Restituisce l'elenco delle prestazioni disponibili nel poliambulatorio.
+      responses:
+        '200':
+          description: Elenco delle prestazioni recuperato correttamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RispostaPrestazione'
+        '405':
+          description: Metodo HTTP non consentito
+        '500':
+          description: Errore interno del server
+
+  # UC03 - MEDICI PER PRESTAZIONE
+
+  /api/prestazioni/{idPrestazione}/medici:
+    get:
+      tags:
+        - Medici
+      summary: Visualizza i medici associati a una prestazione
+      description: Restituisce i medici che effettuano la prestazione selezionata.
+      parameters:
+        - name: idPrestazione
+          in: path
+          required: true
+          description: Identificativo della prestazione medica
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Elenco dei medici recuperato correttamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RispostaMedico'
+        '400':
+          description: Identificativo della prestazione non valido
+        '404':
+          description: Endpoint non trovato
+        '405':
+          description: Metodo HTTP non consentito
+        '500':
+          description: Errore interno del server
+
+  # UC04 - DISPONIBILITA
+
+  /api/medici/{idMedico}/disponibilita:
+    get:
+      tags:
+        - Disponibilita
+      summary: Visualizza le disponibilità di un medico
+      description: Restituisce gli slot futuri e disponibili del medico selezionato.
+      parameters:
+        - name: idMedico
+          in: path
+          required: true
+          description: Identificativo del medico
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Disponibilità recuperate correttamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RispostaDisponibilita'
+        '400':
+          description: Identificativo del medico non valido
+        '404':
+          description: Endpoint non trovato
+        '405':
+          description: Metodo HTTP non consentito
+        '500':
+          description: Errore interno del server
+
+  # UC05 - PRENOTARE
+  # UC06 - VISUALIZZARE LE PROPRIE PRENOTAZIONI
+
+  /api/prenotazioni:
+    get:
+      tags:
+        - Prenotazioni
+      summary: Visualizza le proprie prenotazioni
+      description: Restituisce tutte le prenotazioni del paziente autenticato.
+      security:
+        - TokenSessione: []
+      responses:
+        '200':
+          description: Elenco delle prenotazioni recuperato correttamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RispostaPrenotazioneDettaglio'
+        '401':
+          description: Sessione assente, non valida o scaduta
+        '403':
+          description: Utente non autorizzato
+        '405':
+          description: Metodo HTTP non consentito
+        '500':
+          description: Errore interno del server
+
+    post:
+      tags:
+        - Prenotazioni
+      summary: Prenota una visita medica
+      description: Crea una prenotazione associata al paziente autenticato.
+      security:
+        - TokenSessione: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RichiestaPrenotazione'
+      responses:
+        '201':
+          description: Prenotazione creata correttamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RispostaPrenotazione'
+        '400':
+          description: Dati della prenotazione non validi
+        '401':
+          description: Sessione assente, non valida o scaduta
+        '403':
+          description: Utente non autorizzato
+        '405':
+          description: Metodo HTTP non consentito
+        '409':
+          description: Disponibilità già occupata o non prenotabile
+        '500':
+          description: Errore interno del server
+
+  # UC07 - ANNULLARE UNA PRENOTAZIONE
+
+  /api/prenotazioni/{idPrenotazione}/annulla:
+    patch:
+      tags:
+        - Prenotazioni
+      summary: Annulla una prenotazione
+      description: Annulla una prenotazione futura del paziente autenticato e rende nuovamente disponibile lo slot.
+      security:
+        - TokenSessione: []
+      parameters:
+        - name: idPrenotazione
+          in: path
+          required: true
+          description: Identificativo della prenotazione da annullare
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '204':
+          description: Prenotazione annullata correttamente
+        '400':
+          description: Identificativo della prenotazione non valido
+        '401':
+          description: Sessione assente, non valida o scaduta
+        '403':
+          description: Utente non autorizzato
+        '404':
+          description: Prenotazione inesistente o non appartenente al paziente
+        '405':
+          description: Metodo HTTP non consentito
+        '409':
+          description: Prenotazione già annullata o visita già iniziata
+        '500':
+          description: Errore interno del server
+
+components:
+
+  securitySchemes:
+    TokenSessione:
+      type: http
+      scheme: bearer
+      bearerFormat: opaque
+      description: Token restituito dall'endpoint di login.
+
+  schemas:
+
+    RichiestaLogin:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+          format: password
+
+    RispostaLogin:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        cognome:
+          type: string
+        email:
+          type: string
+        tipoUtente:
+          type: string
+        token:
+          type: string
+
+    RispostaPrestazione:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        descrizione:
+          type: string
+          nullable: true
+
+    RispostaMedico:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        cognome:
+          type: string
+        specializzazione:
+          type: string
+
+    RispostaDisponibilita:
+      type: object
+      properties:
+        id:
+          type: integer
+        data:
+          type: string
+          format: date
+        oraInizio:
+          type: string
+          description: Orario nel formato HH:mm
+
+    RichiestaPrenotazione:
+      type: object
+      required:
+        - idPrestazione
+        - idDisponibilita
+      additionalProperties: false
+      properties:
+        idPrestazione:
+          type: integer
+          minimum: 1
+        idDisponibilita:
+          type: integer
+          minimum: 1
+
+    RispostaPrenotazione:
+      type: object
+      properties:
+        id:
+          type: integer
+        stato:
+          type: string
+
+    RispostaPrenotazioneDettaglio:
+      type: object
+      properties:
+        id:
+          type: integer
+        prestazione:
+          type: string
+        medico:
+          type: string
+        data:
+          type: string
+          format: date
+        oraInizio:
+          type: string
+          description: Orario nel formato HH:mm
+        stato:
+          type: string

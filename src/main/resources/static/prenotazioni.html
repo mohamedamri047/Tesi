@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le mie prenotazioni - Poliambulatorio</title>
+    <link rel="stylesheet" href="/css/stile.css">
+    <script src="/js/api.js" defer></script>
+    <script src="/js/prenotazioni.js" defer></script>
+</head>
+<body>
+
+<header class="barra-superiore">
+    <div class="contenitore barra-contenuto">
+        <div class="nome-struttura">
+            <span>Poliambulatorio</span>
+        </div>
+
+        <nav class="navigazione">
+            <a href="/prenota.html" class="pulsante-secondario">Prenota una visita</a>
+            <button type="button" id="pulsante-esci" class="pulsante-secondario">Esci</button>
+        </nav>
+    </div>
+</header>
+
+<main class="contenitore contenuto-principale">
+
+    <div class="titolo-pagina">
+        <h1>Le mie prenotazioni</h1>
+        <p>Qui puoi consultare le tue visite e annullare quelle ancora disponibili.</p>
+    </div>
+
+    <section class="pannello">
+        <h2>Elenco prenotazioni</h2>
+
+        <p id="messaggio-caricamento" class="testo-secondario">
+            Caricamento prenotazioni...
+        </p>
+
+        <p id="messaggio-esito" class="messaggio-successo" role="status" hidden></p>
+        <p id="messaggio-errore" class="messaggio-errore" role="alert" hidden></p>
+
+        <div id="elenco-prenotazioni" class="lista-prenotazioni"></div>
+    </section>
+
+</main>
+
+</body>
+</html>

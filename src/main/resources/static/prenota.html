@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prenota una visita - Poliambulatorio</title>
+    <link rel="stylesheet" href="/css/stile.css">
+    <script src="/js/api.js" defer></script>
+    <script src="/js/prenota.js" defer></script>
+</head>
+<body>
+
+<header class="barra-superiore">
+    <div class="contenitore barra-contenuto">
+        <div class="nome-struttura">
+            <span>Poliambulatorio</span>
+        </div>
+        <nav class="navigazione">
+            <a href="/prenotazioni.html" class="pulsante-secondario">
+                Le mie prenotazioni
+            </a>
+            <button type="button" id="pulsante-esci" class="pulsante-secondario">
+                Esci
+            </button>
+        </nav>
+    </div>
+</header>
+
+<main class="contenitore contenuto-principale">
+    <div class="titolo-pagina">
+        <h1>Prenota una visita</h1>
+        <p>Seleziona una prestazione, scegli il medico e prenota un orario disponibile.</p>
+    </div>
+
+    <div class="colonne-prenotazione">
+        <section class="pannello">
+            <h2>Scegli la visita</h2>
+            <div class="campo">
+                <label for="prestazione">Prestazione medica</label>
+                <select id="prestazione" disabled>
+                    <option value="">Caricamento prestazioni...</option>
+                </select>
+            </div>
+            <div class="campo">
+                <label for="medico">Medico</label>
+                <select id="medico" disabled>
+                    <option value="">Seleziona prima una prestazione</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="pannello">
+            <h2>Orari disponibili</h2>
+            <p id="messaggio-disponibilita" class="testo-secondario" aria-live="polite">
+                Seleziona una prestazione e un medico per visualizzare gli orari.
+            </p>
+            <div id="elenco-disponibilita" class="griglia-disponibilita"></div>
+            <p id="riepilogo" class="riepilogo" hidden></p>
+            <button type="button" id="pulsante-conferma" class="pulsante-primario" disabled>
+                Conferma prenotazione
+            </button>
+            <p id="messaggio-esito" class="messaggio-successo" role="status" hidden></p>
+            <p id="messaggio-errore" class="messaggio-errore" role="alert" hidden></p>
+        </section>
+    </div>
+</main>
+</body>
+</html>
